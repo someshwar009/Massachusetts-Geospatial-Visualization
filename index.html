@@ -244,9 +244,21 @@
                     .attr("fill", d => colorScale(d['properties'][dataField]) || "#ccc")
                     .on("mouseenter", (m, d) => {
                         tooltip.transition().duration(200).style("opacity", .9);
-
-                        if (isMapC && d.properties["Gini Index Data"]) {
-                            let giniTooltipHtml = `<strong>County: ${d.properties.COUNTY}</strong><br>Gini Index by Year:<br>`;
+                        if (containerName === "#mapB") {
+                            const pop1980 = d.properties.POP1980 || "Data not available";
+                            const pop2010 = d.properties.POP2010 || "Data not available";
+                            tooltip.html(`
+                                <strong>County: ${d.properties.COUNTY || 'Unknown'}</strong><br>
+                                <strong>Town: ${d['properties']['TOWN']}</strong><br>
+                                Population Change: ${d['properties'][dataField] || 'Data not available'}<br>
+                                Population in 1980: ${pop1980}<br>
+                                Population in 2010: ${pop2010}
+                            `);
+                        }
+                        else if (isMapC && d.properties["Gini Index Data"]) {
+                            let giniTooltipHtml = `<strong>County: ${d.properties.COUNTY}</strong><br>
+                            <strong>Town: ${d['properties']['TOWN']}</strong><br>
+                            Gini Index by Year:<br>`;
                             const giniData = d.properties["Gini Index Data"];
                             for (const [year, giniIndex] of Object.entries(giniData)) {
                                 giniTooltipHtml += `Year ${year}: ${giniIndex}<br>`;
@@ -290,7 +302,7 @@
                                 .call(d3.axisLeft(y).ticks(3))
                                 .attr("font-size", "8px");
                         } else {
-                            tooltip.html(`County: ${d.properties.COUNTY || 'Unknown'}<br>${tooltipText}: ${d['properties'][dataField] || 'Data not available'}<br>Town: ${d['properties']['TOWN']}`);
+                            tooltip.html(`<strong>County: ${d.properties.COUNTY || 'Unknown'}</strong><br><strong>Town: ${d['properties']['TOWN']}</strong><br>${tooltipText}: ${d['properties'][dataField] || 'Data not available'}`);
                         }
 
                         tooltip.style("left", (m.pageX + 10) + "px")
